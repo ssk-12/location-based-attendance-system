@@ -1,37 +1,37 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Signin } from './components/Signin';
 import { RecoilRoot } from 'recoil';
+import { Signup } from './components/Signup';
+import Dashboard from './pages/Dashboard';
+import AppBar from './components/AppBar';
+import CreateEvent from './pages/CreateEvent';
 
 
 
+// Layout Component
 const Layout = () => {
-  // const location = useLocation();
-  
-  // const hideAppbarPaths = ['/', '/signup', '/signin'];
-  // const showAppbar = !hideAppbarPaths.includes(location.pathname);
+  const location = useLocation();
+  const hideAppbarPaths = ['/', '/signup', '/signin'];
+  const showAppbar = !hideAppbarPaths.includes(location.pathname);
 
   return (
-    <>
-      {/* {showAppbar && <Appbar/>} */}
-      <RecoilRoot>
-      <Routes>
-        {/* <Route path="/" element={<Auth />} />
-        <Route path="/signup" element={<Auth auth="signup" />} />
-        <Route path="/signin" element={<Auth />} />
-        <Route path="/dashboard" element={<BlogPosts />} />
-        <Route path="/blog/:id" element={<Blogs />} />
-        <Route path="/create" element={<CreateBlog />} />
-        <Route path="/test" element={<Blogs />} />
-        <Route path="/drafts" element={<Drafts />} />
-        <Route path="/posts" element={<Userblogs />} /> */}
-        <Route path="/signin" element={<Signin />} />
-      </Routes>
-      </RecoilRoot>
-    </>
+    <RecoilRoot> {/* Move RecoilRoot here to wrap everything */}
+      <>
+        {showAppbar && <AppBar/>}
+        <Routes>
+          <Route path="/" element={<Signin />} /> {/* Adjusted for consistency */}
+          <Route path="/signin" element={<Signin />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="//create-event" element={<CreateEvent />} />
+          {/* Add other routes as needed */}
+        </Routes>
+      </>
+    </RecoilRoot>
   );
 };
 
-
+// App Component
 function App() {
   return (
     <BrowserRouter>
