@@ -20,6 +20,9 @@ const Dashboard: React.FC = () => {
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
 
+    const userem = localStorage.getItem("username");
+    console.log("hello", userem);
+    
     useEffect(() => {
         const fetchEvents = async () => {
             try {
@@ -35,25 +38,19 @@ const Dashboard: React.FC = () => {
         fetchEvents();
     }, []);
 
-    const handleAttend = async (event:any) => {
+    const handleAttend = async (event: Event) => {
         navigator.geolocation.getCurrentPosition(async (position) => {
           const userLat = position.coords.latitude;
           const userLong = position.coords.longitude;
-      
-          
+
           const [eventLat, eventLong] = event.location.split(',').map(Number);
-      
-          
           const distance = calculateDistance(userLat, userLong, eventLat, eventLong);
-            console.log(event.name,userLat, userLong, eventLat, eventLong)
-            console.log(distance)
-      
+
           if (distance <= event.proximity) {
-            
             try {
-              await axios.post('http://localhost:8787/api/v1/events/attend', {
+              await axios.post('http://localhost:8787/api/v1/allevents/attend', {
                 eventId: event.id,
-                userEmail: email, 
+                userEmail: userem, 
                 status: 'PRESENT', 
               });
               alert('Attendance marked as present!');
@@ -67,11 +64,9 @@ const Dashboard: React.FC = () => {
         }, (error) => {
           console.error('Error getting location:', error);
         });
-      };
+    };
       
-      
-
-      function calculateDistance(lat1, lon1, lat2, lon2) {
+    function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
         const R = 6371000; // Earth's radius in meters
         const dLat = (lat2 - lat1) * (Math.PI / 180);
         const dLon = (lon2 - lon1) * (Math.PI / 180);
@@ -81,39 +76,35 @@ const Dashboard: React.FC = () => {
           Math.sin(dLon / 2) * Math.sin(dLon / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         const distance = R * c; // Distance in meters
+        console.log("distance ",distance)
         return distance;
-    }
-    
-      
-
-    function deg2rad(deg: number): number {
-        return deg * (Math.PI/180);
+        
     }
 
     return (
-        <div className="dashboard bg-gray-100 min-h-screen p-8">
-            <div className="user-profile bg-white shadow-md rounded-lg p-6 mb-8">
+        <div className="dashboard bg-gray-50 min-h-screen p-8">
+            <div className="user-profile bg-white shadow rounded-lg p-6 mb-8">
                 <h2 className="font-bold text-xl text-gray-800">Welcome, {username}!</h2>
                 <p className="text-gray-600">Email: {email}</p>
             </div>
-            <div className="events bg-white shadow-md rounded-lg p-6">
+            <div className="events bg-white shadow rounded-lg p-6">
                 <h3 className="font-bold text-lg text-gray-800 mb-4">Upcoming Events</h3>
                 {loading ? (
                     <p className="text-gray-600">Loading events...</p>
                 ) : events.length > 0 ? (
-                    <ul className="list-disc list-inside">
+                    <div className="space-y-4">
                         {events.map(event => (
-                            <li key={event.id} className="text-gray-700 flex justify-between items-center">
-                                {event.name} - {new Date(event.timestamp).toLocaleString()}
+                            <div key={event.id} className="event-item bg-gray-100 p-4 rounded-lg flex justify-between items-center">
+                                <span className="text-gray-700">{event.name} - {new Date(event.timestamp).toLocaleString()}</span>
                                 <button
-                                    className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
+                                    className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                                     onClick={() => handleAttend(event)}
                                 >
                                     Attend
                                 </button>
-                            </li>
+                            </div>
                         ))}
-                    </ul>
+                    </div>
                 ) : (
                     <p className="text-gray-600">No upcoming events.</p>
                 )}

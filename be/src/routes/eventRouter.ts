@@ -4,13 +4,6 @@ import { Hono } from "hono";
 import { sign } from "hono/jwt";
 
 
-// export const userRouter = new Hono<{
-//     Bindings: {
-//         DATABASE_URL: string;
-//         JWT_SECRET: string;
-//     }
-// }>();
-
 export const eventsRouter = new Hono<{
     Bindings: {
         DATABASE_URL: string;
@@ -47,3 +40,46 @@ eventsRouter.get('/events', async (c) => {
     });
     return c.json(newEvent);
   });
+
+  // POST route to handle attendance update
+eventsRouter.post('/attend', async (c) => {
+
+  console.log("hello")
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+}).$extends(withAccelerate());
+const body = await c.req.json();
+  const { eventId, userEmail, status } = body;
+  console.log(body)
+
+  // Find user by email
+  const user = await prisma.user.findUnique({
+    where: {
+      email: userEmail,
+    },
+  });
+
+  if (!user) {
+    return c.json({ message: 'User not found.' }, 404);
+  }
+
+  // Upsert attendance record
+  const attendance = await prisma.attendance.upsert({
+    where: {
+      uniqueEventUser: {
+        eventId: eventId,
+        userId: user.id,
+      },
+    },
+    update: {
+      status: status,
+    },
+    create: {
+      eventId:eventId,
+      userId: user.id,
+      status: status,
+    },
+  });
+
+  return c.json(attendance);
+});

@@ -29,7 +29,6 @@ const CreateEvent: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // Ensure location has been set
         if (!location) {
             alert('Please allow access to your location.');
             return;
@@ -40,7 +39,7 @@ const CreateEvent: React.FC = () => {
             location,
             proximity: parseFloat(proximity),
             timestamp,
-            hostId: 1, // Assuming a static hostId for simplicity
+            hostId: "a776c565-8de2-4903-98b6-851f21342c57", 
         };
 
         try {
@@ -53,26 +52,32 @@ const CreateEvent: React.FC = () => {
     };
 
     return (
-        <div className="p-4 max-w-md mx-auto">
-            <h2 className="text-xl font-semibold mb-4">Create Event</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="create-event-container p-6 max-w-lg mx-auto bg-white shadow-md rounded-lg">
+            <h2 className="text-2xl font-bold text-center mb-6">Create Event</h2>
+            <form onSubmit={handleSubmit} className="space-y-6">
                 <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="input input-bordered w-full"
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Event Name"
                     required
                 />
                 <div>
-                    <button type="button" onClick={handleLocation} className="btn btn-secondary w-full">Use My Location</button>
-                    <p className="text-xs text-gray-500 mt-1">Location: {location || 'Not set'}</p>
+                    <button
+                        type="button"
+                        onClick={handleLocation}
+                        className="w-full px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        Use My Location
+                    </button>
+                    <p className="mt-2 text-sm text-gray-500">Location: {location || 'Not set'}</p>
                 </div>
                 <input
                     type="text"
                     value={proximity}
                     onChange={(e) => setProximity(e.target.value)}
-                    className="input input-bordered w-full"
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Proximity (in meters)"
                     required
                 />
@@ -80,10 +85,15 @@ const CreateEvent: React.FC = () => {
                     type="datetime-local"
                     value={timestamp}
                     onChange={(e) => setTimestamp(e.target.value)}
-                    className="input input-bordered w-full"
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                 />
-                <button type="submit" className="btn btn-primary w-full">Create Event</button>
+                <button
+                    type="submit"
+                    className="w-full px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                    Create Event
+                </button>
             </form>
         </div>
     );
