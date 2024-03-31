@@ -77,7 +77,11 @@ const Dashboard: React.FC = () => {
                 eventId: event.id,
                 userEmail: userem, 
                 status: 'PRESENT', 
-              });
+              },{
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            });
               alert('Attendance marked as present!');
             } catch (error) {
               console.error('Error marking attendance:', error);
