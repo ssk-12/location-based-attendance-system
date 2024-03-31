@@ -3,8 +3,8 @@ import { useRecoilValue } from 'recoil';
 import { usernameState, emailState } from '../state/atom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { addItem } from '../utils/eventSlice';
+// import { useDispatch } from 'react-redux';
+// import { addItem } from '../utils/eventSlice';
 
 interface Event {
   id: number;
@@ -27,7 +27,7 @@ const Dashboard: React.FC = () => {
     const userem = localStorage.getItem("username");
     console.log("hello", userem);
 
-    const dispatchFun= useDispatch();
+    // const dispatchFun= useDispatch();
 
     
     
@@ -45,13 +45,13 @@ const Dashboard: React.FC = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                console.log(response)
+                // console.log(response)
                 
-                const addEvents= () =>{
-                    dispatchFun(addItem(response.data));
+                // const addEvents= () =>{
+                //     dispatchFun(addItem(response.data));
                     
-                }
-                addEvents();
+                // }
+                // addEvents();
                 setEvents(response.data);
                 setLoading(false);
             } catch (error) {

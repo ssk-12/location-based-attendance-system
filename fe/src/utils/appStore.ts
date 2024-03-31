@@ -1,10 +1,10 @@
-import { configureStore } from "@reduxjs/toolkit";
-import  eventReducer  from "./eventSlice";
+// import { configureStore } from "@reduxjs/toolkit";
+// import  eventReducer  from "./eventSlice";
 
-const appStore = configureStore({
-    reducer: {
-        event: eventReducer,
-    }
-});
+// const appStore = configureStore({
+//     reducer: {
+//         event: eventReducer,
+//     }
+// });
 
-export default appStore;
+// export default appStore;

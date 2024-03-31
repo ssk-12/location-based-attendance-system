@@ -6,8 +6,8 @@ import { Signup } from './components/Signup';
 import Dashboard from './pages/Dashboard';
 import CreateEvent from './pages/CreateEvent';
 import { RecoilRoot } from 'recoil';
-import { Provider } from "react-redux";
-import appStore from "./utils/appStore";
+// import { Provider } from "react-redux";
+// import appStore from "./utils/appStore";
 // import { JoinEvents } from './components/JoinEvents';
 
 const Layout = () => {
@@ -57,13 +57,13 @@ const Layout = () => {
 
 const App: React.FC = () => {
   return (
-    <Provider store={appStore}>
+    // <Provider store={appStore}>
     <RecoilRoot>
       <BrowserRouter>
         <Layout />
       </BrowserRouter>
     </RecoilRoot>
-    </Provider>
+    // </Provider>
   );
 };
 
