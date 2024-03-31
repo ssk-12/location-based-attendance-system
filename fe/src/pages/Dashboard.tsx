@@ -3,7 +3,7 @@ import { useRecoilValue } from 'recoil';
 import { usernameState, emailState } from '../state/atom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addItem } from '../utils/eventSlice';
 
 interface Event {
