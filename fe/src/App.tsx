@@ -41,6 +41,7 @@ const Layout = () => {
       {/* Adjust padding based on AppBar visibility, regardless of sidebar */}
       <div className={`transition-margin duration-500 ${!shouldHideAppBar ? 'pt-10' : 'pt-0'} ${isSidebarVisible && !shouldHideAppBar ? 'ml-64' : 'ml-0'}`}>
         <Routes>
+        <Route path="/" element={<Signin />} />
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
