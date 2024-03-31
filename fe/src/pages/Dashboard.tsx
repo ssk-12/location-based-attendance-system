@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { usernameState, emailState } from '../state/atom';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem } from '../utils/eventSlice';
 
 interface Event {
   id: number;
@@ -15,6 +18,7 @@ interface Event {
 }
 
 const Dashboard: React.FC = () => {
+    const navigate = useNavigate();
     const username = useRecoilValue(usernameState);
     const email = useRecoilValue(emailState);
     const [events, setEvents] = useState<Event[]>([]);
@@ -22,11 +26,32 @@ const Dashboard: React.FC = () => {
 
     const userem = localStorage.getItem("username");
     console.log("hello", userem);
+
+    const dispatchFun= useDispatch();
+
+    
     
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await axios.get<Event[]>('http://localhost:8787/api/v1/allevents/events');
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    console.error('No token found');
+                    navigate("/signin");
+                    return;
+                }
+                const response = await axios.get<Event[]>('https://be.ullegadda-srikanta.workers.dev/api/v1/allevents/events', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                console.log(response)
+                
+                const addEvents= () =>{
+                    dispatchFun(addItem(response.data));
+                    
+                }
+                addEvents();
                 setEvents(response.data);
                 setLoading(false);
             } catch (error) {
@@ -48,7 +73,7 @@ const Dashboard: React.FC = () => {
 
           if (distance <= event.proximity) {
             try {
-              await axios.post('http://localhost:8787/api/v1/allevents/attend', {
+              await axios.post('https://be.ullegadda-srikanta.workers.dev/api/v1/allevents/attend', {
                 eventId: event.id,
                 userEmail: userem, 
                 status: 'PRESENT', 

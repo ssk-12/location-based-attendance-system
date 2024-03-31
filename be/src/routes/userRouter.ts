@@ -118,7 +118,7 @@ userRouter.use('/users/', async (c, next) => {
 });
 
 
-userRouter.get('/users/:id', async (c) => {
+userRouter.get('/usersdetails', async (c) => {
 
     const prisma = new PrismaClient({
         //@ts-ignore

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const CreateEvent: React.FC = () => {
+    const navigate = useNavigate();
     const [name, setName] = useState('');
     const [location, setLocation] = useState('');
     const [proximity, setProximity] = useState('');
@@ -39,11 +41,16 @@ const CreateEvent: React.FC = () => {
             location,
             proximity: parseFloat(proximity),
             timestamp,
-            hostId: "a776c565-8de2-4903-98b6-851f21342c57", 
         };
 
         try {
-            await axios.post('http://localhost:8787/api/v1/allevents/event/create', event);
+            const token = localStorage.getItem('token');
+                if (!token) {
+                    console.error('No token found');
+                    navigate("/signin");
+                    return;
+                }
+            await axios.post('https://be.ullegadda-srikanta.workers.dev/api/v1/allevents/event/create', event);
             alert('Event created successfully');
         } catch (error) {
             console.error('Error creating event:', error);
