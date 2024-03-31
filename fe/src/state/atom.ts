@@ -1,6 +1,6 @@
-import { atom, selector } from 'recoil';
+import { atom } from 'recoil';
 
-import axios from 'axios';
+
 
 export const emailState = atom({
   key: 'emailState',
