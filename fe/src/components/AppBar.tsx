@@ -22,7 +22,7 @@ const AppBar: React.FC<AppBarProps> = ({ setSidebarVisible }) => {
 
   return (
     <>
-      <header className="bg-white text-black px-5 py-4 flex justify-between items-center fixed top-0 left-0 right-0 z-50 shadow-md">
+      <header className="bg-white text-black px-5 py-4 flex justify-between items-center fixed top-0 left-0 right-0 z-50 max-h-16 shadow-md">
         <div className="flex items-center gap-3">
           <div onClick={toggleSidebar} className="cursor-pointer">
             <svg className="w-9 h-9 p-1 rounded-full hover:bg-opacity-10 hover:bg-slate-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -37,12 +37,12 @@ const AppBar: React.FC<AppBarProps> = ({ setSidebarVisible }) => {
         </div>
 
         <div className="flex items-center space-x-3 relative">
-          <div>({email})</div>
+          <div>{email}</div>
           <div onClick={() => setShowMenu(!showMenu)} className="cursor-pointer">
             <img className="w-8 h-8 p-2 rounded-full hover:bg-opacity-10 hover:bg-slate-500" src="https://www.svgrepo.com/show/99553/plus.svg" alt="Plus icon" />
           </div>
           {showMenu && (
-            <div className="absolute top-10 right-0 bg-white shadow-md rounded-lg overflow-hidden">
+            <div className="absolute top-10 right-20 bg-white shadow-md rounded-lg overflow-hidden">
               <ul>
                 <li>
                   <Link to="/create-event" className="block px-4 py-2 hover:bg-gray-100">Create Event</Link>

@@ -7,7 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Define an enum for attendance status
 enum AttendanceStatus {
   PRESENT
   ABSENT
@@ -15,22 +14,27 @@ enum AttendanceStatus {
 }
 
 model User {
-  id          String       @id @default(uuid())
-  email       String       @unique
-  password    String
-  name        String?
-  events      Event[]      @relation("EventHost")
-  attendances Attendance[]
+  id               String            @id @default(uuid())
+  email            String            @unique
+  password         String
+  name             String?
+  events           Event[]           @relation("EventHost")
+  classes          Class[]           @relation("ClassHost")
+  attendances      Attendance[]
+  classEnrollments ClassEnrollment[]
+  classAttendances ClassAttendance[]
 }
 
 model Event {
-  id          String        @id @default(uuid())
+  id          String            @id @default(uuid())
   name        String
   location    String
   proximity   Float
-  timestamp   DateTime      @default(now())
+  timestamp   DateTime         @default(now())
   hostId      String
-  host        User          @relation(name: "EventHost", fields: [hostId], references: [id])
+  classId     String?
+  host        User             @relation(name: "EventHost", fields: [hostId], references: [id])
+  class       Class?           @relation(fields: [classId], references: [id])
   attendances Attendance[]
 }
 
@@ -44,4 +48,38 @@ model Attendance {
   user      User             @relation(fields: [userId], references: [id])
 
   @@unique([eventId, userId], name: "uniqueEventUser")
+}
+
+model Class {
+  id          String            @id @default(uuid())
+  name        String
+  subject     String
+  hostId      String
+  host        User              @relation(name: "ClassHost", fields: [hostId], references: [id])
+  enrollments ClassEnrollment[]
+  events      Event[]
+  attendances ClassAttendance[]
+}
+
+model ClassEnrollment {
+  id        String   @id @default(uuid())
+  classId   String
+  userId    String
+  enrolledAt DateTime @default(now()) 
+  class     Class    @relation(fields: [classId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([classId, userId], name: "uniqueClassUserEnrollment")
+}
+
+model ClassAttendance {
+  id        String           @id @default(uuid())
+  classId   String
+  userId    String
+  timestamp DateTime         @default(now())
+  status    AttendanceStatus
+  class     Class            @relation(fields: [classId], references: [id])
+  user      User             @relation(fields: [userId], references: [id])
+
+  @@unique([classId, userId], name: "uniqueClassUserAttendance")
 }

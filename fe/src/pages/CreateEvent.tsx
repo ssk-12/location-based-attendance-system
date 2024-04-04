@@ -50,7 +50,11 @@ const CreateEvent: React.FC = () => {
                     navigate("/signin");
                     return;
                 }
-            await axios.post('https://be.ullegadda-srikanta.workers.dev/api/v1/allevents/event/create', event);
+            await axios.post('http://127.0.0.1:8787/api/v1/allevents/event/create', event,{
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+        });
             alert('Event created successfully');
         } catch (error) {
             console.error('Error creating event:', error);

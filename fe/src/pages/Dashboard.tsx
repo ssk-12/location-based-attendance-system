@@ -3,18 +3,17 @@ import { useRecoilValue } from 'recoil';
 import { usernameState, emailState } from '../state/atom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-// import { useDispatch } from 'react-redux';
-// import { addItem } from '../utils/eventSlice';
+
 
 interface Event {
-  id: number;
-  name: string;
-  location: string;
-  proximity: number;
-  timestamp: string;
-  hostId: number;
-  latitude: number; 
-  longitude: number; 
+    id: number;
+    name: string;
+    location: string;
+    proximity: number;
+    timestamp: string;
+    hostId: number;
+    latitude: number;
+    longitude: number;
 }
 
 const Dashboard: React.FC = () => {
@@ -25,12 +24,7 @@ const Dashboard: React.FC = () => {
     const [loading, setLoading] = useState(true);
 
     const userem = localStorage.getItem("username");
-    console.log("hello", userem);
 
-    // const dispatchFun= useDispatch();
-
-    
-    
     useEffect(() => {
         const fetchEvents = async () => {
             try {
@@ -40,18 +34,11 @@ const Dashboard: React.FC = () => {
                     navigate("/signin");
                     return;
                 }
-                const response = await axios.get<Event[]>('https://be.ullegadda-srikanta.workers.dev/api/v1/allevents/events', {
+                const response = await axios.get<Event[]>('http://127.0.0.1:8787/api/v1/allevents/events', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                // console.log(response)
-                
-                // const addEvents= () =>{
-                //     dispatchFun(addItem(response.data));
-                    
-                // }
-                // addEvents();
                 setEvents(response.data);
                 setLoading(false);
             } catch (error) {
@@ -65,45 +52,49 @@ const Dashboard: React.FC = () => {
 
     const handleAttend = async (event: Event) => {
         navigator.geolocation.getCurrentPosition(async (position) => {
-          const userLat = position.coords.latitude;
-          const userLong = position.coords.longitude;
+            const userLat = position.coords.latitude;
+            const userLong = position.coords.longitude;
 
-          const [eventLat, eventLong] = event.location.split(',').map(Number);
-          const distance = calculateDistance(userLat, userLong, eventLat, eventLong);
+            const [eventLat, eventLong] = event.location.split(',').map(Number);
+            const distance = calculateDistance(userLat, userLong, eventLat, eventLong);
 
-          if (distance <= event.proximity) {
-            try {
-              await axios.post('https://be.ullegadda-srikanta.workers.dev/api/v1/allevents/attend', {
-                eventId: event.id,
-                userEmail: userem, 
-                status: 'PRESENT', 
-              });
-              alert('Attendance marked as present!');
-            } catch (error) {
-              console.error('Error marking attendance:', error);
-              alert('Failed to mark attendance');
+            if (distance <= event.proximity) {
+                try {
+                    await axios.post('http://127.0.0.1:8787/api/v1/allevents/attend', {
+                        eventId: event.id,
+                        userEmail: userem,
+                        status: 'PRESENT',
+                    }, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        },
+                    });
+                    alert('Attendance marked as present!');
+                } catch (error) {
+                    console.error('Error marking attendance:', error);
+                    alert('Failed to mark attendance');
+                }
+            } else {
+                alert('You are too far from the event location.');
             }
-          } else {
-            alert('You are too far from the event location.');
-          }
         }, (error) => {
-          console.error('Error getting location:', error);
+            console.error('Error getting location:', error);
         });
     };
-      
+
     function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
         const R = 6371000; // Earth's radius in meters
         const dLat = (lat2 - lat1) * (Math.PI / 180);
         const dLon = (lon2 - lon1) * (Math.PI / 180);
-        const a = 
-          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-          Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * 
-          Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         const distance = R * c; // Distance in meters
-        console.log("distance ",distance)
+        console.log("distance ", distance)
         return distance;
-        
+
     }
 
     return (

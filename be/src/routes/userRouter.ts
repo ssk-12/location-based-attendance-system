@@ -74,48 +74,48 @@ userRouter.post('/signin', async (c) => {
 })
 
 
-userRouter.use('/users/', async (c, next) => {
-    try {
+// userRouter.use('/users/', async (c, next) => {
+//     try {
         
-        const prisma = new PrismaClient({
-            datasourceUrl: c.env?.DATABASE_URL,
-        }).$extends(withAccelerate());
+//         const prisma = new PrismaClient({
+//             datasourceUrl: c.env?.DATABASE_URL,
+//         }).$extends(withAccelerate());
 
-        const jwt = c.req.header('Authorization');
-        if (!jwt) {
-            c.status(401);
-            return c.json({ error: "Unauthorized: No token provided." });
-        }
+//         const jwt = c.req.header('Authorization');
+//         if (!jwt) {
+//             c.status(401);
+//             return c.json({ error: "Unauthorized: No token provided." });
+//         }
         
-        const token = jwt.split(' ')[1];
-        const payload = await verify(token, c.env.JWT_SECRET);
-        if (!payload) {
-            c.status(401);
-            return c.json({ error: "Unauthorized: Invalid token." });
-        }
+//         const token = jwt.split(' ')[1];
+//         const payload = await verify(token, c.env.JWT_SECRET);
+//         if (!payload) {
+//             c.status(401);
+//             return c.json({ error: "Unauthorized: Invalid token." });
+//         }
 
-        const user = await prisma.user.findUnique({
-            where: {
-                id: payload.id
-            }
-        });
+//         const user = await prisma.user.findUnique({
+//             where: {
+//                 id: payload.id
+//             }
+//         });
 
-        if (!user) {
-            c.status(404);
-            return c.json({ error: "User not found." });
-        }
+//         if (!user) {
+//             c.status(404);
+//             return c.json({ error: "User not found." });
+//         }
 
-        c.set('userId', user.id);
-        await next();
-    } catch (error) {
+//         c.set('userId', user.id);
+//         await next();
+//     } catch (error) {
         
-        console.error('Authentication error:', error);
+//         console.error('Authentication error:', error);
 
         
-        c.status(500);
-        return c.json({ error: "An internal server error occurred." });
-    }
-});
+//         c.status(500);
+//         return c.json({ error: "An internal server error occurred." });
+//     }
+// });
 
 
 userRouter.get('/usersdetails', async (c) => {
